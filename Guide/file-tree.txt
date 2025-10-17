@@ -1,0 +1,197 @@
+LibertyConnect/
++-- .expo/
+|   +-- devices.json
+|   +-- README.md
++-- docs/                               <-- RENAMED from Instrctions/ (spelling fix)
+|   +-- LOGIC.txt
+|   +-- POPULATE_APP.txt
+|   +-- Prompts.txt
+|   +-- STACK.txt
+|   +-- STRUCTURE.txt
+|   +-- TO-DOs.txt
+|   +-- logic_flow.md                   <-- NEW (authoritative build guide)
+|   +-- deep-linking.md                 <-- NEW (scheme + universal/app links)
+|   +-- ugc-compliance.md               <-- NEW (report/block/SLA, Terms)
+|   +-- storage-rls.md                  <-- NEW (bucket paths & policies)
+|   +-- auth.md                         <-- NEW (anon→magic link/OTP, roles)
+|   +-- data-model.md                   <-- NEW (tables/indexes/ERD notes)
++-- .editorconfig                        <-- NEW
++-- .prettierrc                          <-- NEW
++-- README.md
++-- package.json
++-- package-lock.json
++-- tsconfig.json
++-- file-tree.txt
++-- eslint.config.js
++-- eas.json
++-- .gitignore
++-- supabase/
+|   +-- functions/
+|   |   +-- _shared/
+|   |   |   +-- auth.ts
+|   |   |   +-- http.ts
+|   |   |   +-- mod.ts
+|   |   |   +-- push.ts
+|   |   |   +-- supabase.ts
+|   |   +-- announcement_create/
+|   |   |   +-- index.ts
+|   |   +-- api/
+|   |   |   +-- index.ts
+|   |   +-- devotional_upsert/
+|   |   |   +-- index.ts
+|   |   +-- event_create/
+|   |   |   +-- index.ts
+|   |   +-- event_reminder_30m/
+|   |   |   +-- index.ts
+|   |   +-- event_rsvp/
+|   |   |   +-- index.ts
+|   |   +-- maintenance-ttl/
+|   |   |   +-- index.ts
+|   |   +-- prayer_create/
+|   |   |   +-- index.ts
+|   |   +-- prayer_react/
+|   |   |   +-- index.ts
+|   |   +-- save_device_token/
+|   |   |   +-- index.ts
+|   |   +-- push_receipts/              <-- NEW (Expo receipt poll & prune)
+|   |   |   +-- index.ts
+|   |   +-- impersonate/                <-- NEW (admin magic-link generator)
+|   |   |   +-- index.ts
+|   |   +-- report_action/              <-- NEW (moderator actions)
+|   |   |   +-- index.ts
+|   |   +-- notification_prefs_upsert/  <-- NEW (save per-category prefs)
+|   |   |   +-- index.ts
+|   |   +-- search/                     <-- NEW (FTS query endpoint)
+|   |       +-- index.ts
+|   +-- migrations/
+|   |   +-- 000_init.sql
+|   |   +-- 010_cron_ttls.sql
+|   |   +-- 020_cron_reminders.sql
+|   |   +-- 030_storage_policies.sql    <-- NEW (buckets + storage.objects RLS)
+|   |   +-- 040_search_fts.sql          <-- NEW (tsvector + indexes)
+|   |   +-- 050_rls_policies.sql        <-- NEW (core table policies)
+|   +-- seed/
+|   |   +-- visible-content.sql
+|   |   +-- demo-org-and-users.sql      <-- NEW
+|   +-- tests/                          <-- NEW (pgTAP database tests)
+|       +-- 000-setup-tests-hooks.sql
+|       +-- 010-rls-enabled-all.sql
+|       +-- 020-rls-tenancy-policies.sql
+|       +-- 030-storage-policies.sql
+|       +-- 040-search-queries.sql
++-- mobile/
+|   +-- .expo/
+|   |   +-- types/
+|   |   |   +-- router.d.ts
+|   |   +-- devices.json
+|   |   +-- README.md
+|   +-- .vscode/
+|   |   +-- extensions.json
+|   |   +-- settings.json
+|   +-- app/
+|   |   +-- (auth)/
+|   |   |   +-- _layout.tsx
+|   |   |   +-- register.tsx
+|   |   |   +-- sign-in.tsx
+|   |   +-- (future)/
+|   |   |   +-- _layout.tsx
+|   |   |   +-- dashboard.tsx
+|   |   |   +-- groups.tsx
+|   |   +-- (modals)/
+|   |   |   +-- _layout.tsx
+|   |   |   +-- admin-announcement.tsx
+|   |   |   +-- admin-devotional.tsx
+|   |   |   +-- admin-event.tsx
+|   |   |   +-- report.tsx              <-- NEW (UGC report modal)
+|   |   +-- (tabs)/
+|   |   |   +-- _layout.tsx
+|   |   |   +-- events.tsx
+|   |   |   +-- index.tsx
+|   |   |   +-- prayer.tsx
+|   |   +-- settings.tsx                <-- NEW (prefs, Terms/Privacy links)
+|   |   +-- admin/
+|   |   |   +-- reports.tsx             <-- NEW (moderation queue)
+|   |   |   +-- impersonate.tsx         <-- NEW (launch admin flow)
+|   |   +-- event/[id].tsx
+|   |   +-- prayer/[id].tsx
+|   |   +-- +not-found.tsx
+|   |   +-- _layout.tsx
+|   +-- src/
+|   |   +-- assets/
+|   |   |   +-- fonts/...
+|   |   |   +-- icons/.gitkeep
+|   |   |   +-- images/.gitkeep
+|   |   +-- constants/
+|   |   |   +-- env.ts
+|   |   |   +-- routes.ts
+|   |   |   +-- tokens.ts
+|   |   |   +-- ttl.ts
+|   |   |   +-- links.ts                 <-- NEW (deeplink URL helpers)
+|   |   +-- features/
+|   |   |   +-- announcements/...
+|   |   |   +-- devotional/...
+|   |   |   +-- events/...
+|   |   |   +-- home/...
+|   |   |   +-- notifications/
+|   |   |   |   +-- deeplinks.ts
+|   |   |   |   +-- handleNotificationTap.ts
+|   |   |   |   +-- registerPush.ts
+|   |   |   +-- prayer/...
+|   |   |   +-- moderation/              <-- NEW
+|   |   |   |   +-- components/
+|   |   |   |   |   +-- ReportButton.tsx
+|   |   |   |   +-- hooks/
+|   |   |   |   |   +-- useReports.ts
+|   |   |   |   +-- api.ts
+|   |   |   |   +-- types.ts
+|   |   |   +-- preferences/             <-- NEW (notification/user prefs)
+|   |   |   |   +-- hooks/
+|   |   |   |   |   +-- useNotificationPrefs.ts
+|   |   |   |   +-- api.ts
+|   |   |   |   +-- types.ts
+|   |   |   +-- search/                  <-- NEW (FTS UI)
+|   |   |       +-- hooks/
+|   |   |       |   +-- useSearch.ts
+|   |   |       +-- api.ts
+|   |   |       +-- types.ts
+|   |   +-- lib/
+|   |   |   +-- apiClient.ts
+|   |   |   +-- logs.ts
+|   |   |   +-- navigation.ts
+|   |   |   +-- notifications.ts
+|   |   |   +-- patchExpoGoConsole.ts
+|   |   |   +-- queryClient.ts
+|   |   |   +-- storage.ts
+|   |   |   +-- time.ts
+|   |   |   +-- validators.ts
+|   |   |   +-- supabase.ts              <-- NEW (typed createClient<Database>)
+|   |   +-- navigation/
+|   |   |   +-- FloatingTabBar.tsx
+|   |   +-- providers/
+|   |   |   +-- AppProviders.tsx
+|   |   +-- store/
+|   |   |   +-- auth.ts
+|   |   |   +-- featureFlags.ts
+|   |   |   +-- index.ts
+|   |   +-- types/
+|   |   |   +-- database.types.ts        <-- NEW (generated types)
+|   |   +-- tests/
+|   |       +-- e2e/.gitkeep
+|   |       +-- unit/.gitkeep
+|   |       +-- setup.ts                 <-- NEW (test utils, mock client)
+|   +-- supabase/
+|   |   +-- .branches/_current_branch
+|   |   +-- .temp/cli-latest
+|   |   +-- config.toml
+|   +-- .env
+|   +-- .env.production
+|   +-- app.config.ts
+|   +-- babel.config.js
+|   +-- expo-env.d.ts
+|   +-- global.css
+|   +-- index.js
+|   +-- metro.config.js
+|   +-- nativewind-env.d.ts
+|   +-- package.json
+|   +-- tailwind.config.js
+|   +-- tsconfig.json
