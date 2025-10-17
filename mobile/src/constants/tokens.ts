@@ -1,1 +1,15 @@
-export const TOKENS = {};
+export const TOKENS = {
+  announcements: ['announcements'] as const,
+  announcement: (id: string) => ['announcement', id] as const,
+  devotionals: ['devotionals'] as const,
+  devotional: (id: string) => ['devotional', id] as const,
+  events: ['events'] as const,
+  event: (id: string) => ['event', id] as const,
+  rsvps: (eventId: string) => ['event', eventId, 'rsvps'] as const,
+  prayers: ['prayers'] as const,
+  prayer: (id: string) => ['prayer', id] as const,
+  notificationPrefs: (orgId: string, userId?: string) => ['notificationPrefs', orgId, userId ?? 'guest'] as const,
+  search: (query: string, orgId: string) => ['search', query, orgId] as const,
+  reports: (orgId: string) => ['reports', orgId] as const,
+  devices: (orgId: string) => ['devices', orgId] as const,
+};

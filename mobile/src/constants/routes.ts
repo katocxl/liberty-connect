@@ -1,1 +1,17 @@
-export const ROUTES = {};
+export const ROUTES = {
+  home: '/',
+  announcements: '/announcements',
+  announcementDetail: '/announcement',
+  devotionals: '/devotionals',
+  events: '/events',
+  eventDetail: '/event',
+  prayer: '/prayer',
+  prayerDetail: '/prayer/[id]',
+  settings: '/settings',
+  adminReports: '/admin/reports',
+  adminImpersonate: '/admin/impersonate',
+  reportModal: '/(modals)/report',
+  adminAnnouncementModal: '/(modals)/admin-announcement',
+  adminDevotionalModal: '/(modals)/admin-devotional',
+  adminEventModal: '/(modals)/admin-event',
+};

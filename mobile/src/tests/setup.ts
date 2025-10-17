@@ -1,1 +1,1 @@
-// TODO: implement
+import '@testing-library/jest-native/extend-expect';
