@@ -11,15 +11,6 @@ project_id = "libertyconnect"
 [studio]
   port = 54323
 
-[functions]
-  schemas = ["public"]
-
-  [functions.env]
-    SUPABASE_URL = { from_env = "SUPABASE_URL" }
-    SUPABASE_ANON_KEY = { from_env = "SUPABASE_ANON_KEY" }
-    SERVICE_ROLE_KEY = { from_env = "SUPABASE_SERVICE_ROLE_KEY" }
-    EDGE_FUNCTION_BASE_URL = { from_env = "EDGE_FUNCTION_BASE_URL" }
-
-[app.settings]
-  event_reminder_cron = "* * * * *"
-  housekeeping_cron = "0 * * * *"
+# Application-specific scheduling defaults documented separately.
+# event_reminder_cron = "* * * * *"
+# housekeeping_cron = "0 * * * *"
