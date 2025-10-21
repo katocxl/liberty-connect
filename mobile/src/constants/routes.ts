@@ -1,17 +1,16 @@
+import type { Href } from 'expo-router';
+
 export const ROUTES = {
   home: '/',
-  announcements: '/announcements',
-  announcementDetail: '/announcement',
-  devotionals: '/devotionals',
   events: '/events',
-  eventDetail: '/event',
+  announcementDetail: '/announcement/[id]',
+  eventDetail: '/event/[id]',
   prayer: '/prayer',
   prayerDetail: '/prayer/[id]',
   settings: '/settings',
   adminReports: '/admin/reports',
   adminImpersonate: '/admin/impersonate',
-  reportModal: '/(modals)/report',
-  adminAnnouncementModal: '/(modals)/admin-announcement',
-  adminDevotionalModal: '/(modals)/admin-devotional',
-  adminEventModal: '/(modals)/admin-event',
-};
+} as const;
+
+type EnsureRoutesAreHref<T extends Href> = T;
+type _EnsureRoutesAreHref = EnsureRoutesAreHref<(typeof ROUTES)[keyof typeof ROUTES]>;

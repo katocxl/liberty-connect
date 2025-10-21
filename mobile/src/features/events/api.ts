@@ -3,13 +3,23 @@ import type { Database } from '../../types/database.types';
 import { supabase } from '../../lib/supabase';
 import type { EventDetail, EventSummary, RsvpStatus } from './types';
 
-type EventRow = Database['public']['Tables']['events']['Row'] & {
+type EventRow = Database['public']['Tables']['events']['Row'];
+type EventSummaryRow = Pick<
+  EventRow,
+  'id' | 'title' | 'description' | 'location' | 'location_url' | 'start_at' | 'end_at' | 'cover_image_path'
+> & {
   organizations?: {
     timezone: string | null;
   } | null;
 };
+type EventDetailRow = EventSummaryRow & Pick<EventRow, 'org_id' | 'capacity' | 'created_by'>;
 
-const mapEvent = (row: EventRow): EventSummary => ({
+const EVENT_SUMMARY_COLUMNS =
+  'id, title, description, location, location_url, start_at, end_at, cover_image_path, organizations(timezone)';
+const EVENT_DETAIL_COLUMNS =
+  'id, org_id, title, description, location, location_url, start_at, end_at, cover_image_path, capacity, created_by, organizations(timezone)';
+
+const mapEvent = (row: EventSummaryRow): EventSummary => ({
   id: row.id,
   title: row.title,
   description: row.description,
@@ -24,7 +34,7 @@ const mapEvent = (row: EventRow): EventSummary => ({
 export const fetchEvents = async (orgId: string): Promise<EventSummary[]> => {
   const { data, error } = await supabase
     .from('events')
-    .select('id, title, description, location, location_url, start_at, end_at, cover_image_path, org_id, organizations(timezone)')
+    .select(EVENT_SUMMARY_COLUMNS)
     .eq('org_id', orgId)
     .order('start_at', { ascending: true });
 
@@ -32,15 +42,16 @@ export const fetchEvents = async (orgId: string): Promise<EventSummary[]> => {
     throw new Error(error.message);
   }
 
-  return (data ?? []).map(mapEvent);
+  const rows = (data ?? []) as EventSummaryRow[];
+  return rows.map(mapEvent);
 };
 
 export const fetchEventDetail = async (eventId: string, userId?: string | null): Promise<EventDetail> => {
   const { data, error } = await supabase
     .from('events')
-    .select('id, org_id, title, description, location, location_url, start_at, end_at, cover_image_path, capacity, created_by, organizations(timezone)')
+    .select(EVENT_DETAIL_COLUMNS)
     .eq('id', eventId)
-    .maybeSingle<EventRow>();
+    .maybeSingle();
 
   if (error) {
     throw new Error(error.message);
@@ -72,11 +83,13 @@ export const fetchEventDetail = async (eventId: string, userId?: string | null):
     userRsvp = (rsvpData?.status as RsvpStatus | undefined) ?? null;
   }
 
+  const row = data as EventDetailRow;
+
   return {
-    ...mapEvent(data),
-    createdBy: data.created_by,
-    capacity: data.capacity,
-    orgId: data.org_id,
+    ...mapEvent(row),
+    createdBy: row.created_by,
+    capacity: row.capacity,
+    orgId: row.org_id,
     attendeeCount: count ?? 0,
     userRsvp,
   };

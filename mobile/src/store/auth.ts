@@ -1,4 +1,4 @@
-import type { Session, User } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
 import { ENV } from '../constants/env';
@@ -75,16 +75,19 @@ export const loadOrgContext = async (userId: string | null) => {
 };
 
 export const hydrateAuth = () => {
-  supabase.auth.getSession().then(async ({ data }) => {
+  supabase.auth.getSession().then(async (response) => {
+    const { data } = response;
     useAuthStore.getState().setSession(data.session ?? null);
     await loadOrgContext(data.session?.user.id ?? null);
     useAuthStore.getState().setReady(true);
   });
 
-  const { data: subscription } = supabase.auth.onAuthStateChange(async (_event, session) => {
-    useAuthStore.getState().setSession(session);
-    await loadOrgContext(session?.user?.id ?? null);
-  });
+  const { data: subscription } = supabase.auth.onAuthStateChange(
+    async (_event: AuthChangeEvent, session: Session | null) => {
+      useAuthStore.getState().setSession(session);
+      await loadOrgContext(session?.user?.id ?? null);
+    },
+  );
 
   return () => subscription.subscription.unsubscribe();
 };

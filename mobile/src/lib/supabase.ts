@@ -17,7 +17,9 @@ const SUPABASE_ANON_KEY = requiredEnv('EXPO_PUBLIC_SUPABASE_ANON_KEY');
 
 let client: SupabaseClient<Database> | null = null;
 
-const authStorage = AsyncStorage as unknown as SupabaseClientOptions<Database>['auth']['storage'];
+type AuthOptions = NonNullable<SupabaseClientOptions<Database>['auth']>;
+
+const authStorage = AsyncStorage as unknown as AuthOptions['storage'];
 
 const createSupabaseClient = () =>
   createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {

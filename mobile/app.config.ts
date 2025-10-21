@@ -19,6 +19,7 @@ const expoConfig: ExpoConfig = {
       }
     ]
   },
+  plugins: ["expo-router"],
   experiments: { typedRoutes: true }
 };
 

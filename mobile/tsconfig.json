@@ -1,12 +1,12 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "types": ["react", "react-native", "expo-router"],
-    "jsx": "react-jsx",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "types": [
+      "react",
+      "react-native",
+      "expo-router"
+    ],
+    "jsx": "react-jsx"
   },
-  "include": ["app", "src", "expo-env.d.ts"]
+  "include": ["app", "src", "expo-env.d.ts", ".expo/types/**/*.ts", "types"]
 }

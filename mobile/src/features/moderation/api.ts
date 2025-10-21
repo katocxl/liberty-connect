@@ -1,16 +1,11 @@
 import { callEdgeFunction } from '../../lib/apiClient';
 import { supabase } from '../../lib/supabase';
+import type { Database } from '../../types/database.types';
 import type { ModerationReport } from './types';
 
-type ReportRow = {
-  id: string;
-  org_id: string;
-  target_type: string;
-  target_id: string;
-  reason: string;
-  status: string;
-  created_at: string;
-};
+type ReportRow = Database['public']['Tables']['reports']['Row'];
+type ReportInsert = Database['public']['Tables']['reports']['Insert'];
+export type ReportTargetType = ReportInsert['target_type'];
 
 export const fetchReports = async (orgId: string): Promise<ModerationReport[]> => {
   const { data, error } = await supabase
@@ -53,7 +48,7 @@ export const actOnReport = async (
 export const createReport = async (
   orgId: string,
   reporterId: string,
-  targetType: string,
+  targetType: ReportTargetType,
   targetId: string,
   reason: string,
   details?: string,

@@ -1,5 +1,16 @@
 import { ROUTES } from './routes';
 
+export type RouteMatch =
+  | { route: typeof ROUTES.home }
+  | { route: typeof ROUTES.events }
+  | { route: typeof ROUTES.prayer }
+  | { route: typeof ROUTES.settings }
+  | { route: typeof ROUTES.adminReports }
+  | { route: typeof ROUTES.adminImpersonate }
+  | { route: typeof ROUTES.announcementDetail; params: { id: string } }
+  | { route: typeof ROUTES.eventDetail; params: { id: string } }
+  | { route: typeof ROUTES.prayerDetail; params: { id: string } };
+
 const HOST_SCHEME = 'myapp://';
 
 const withScheme = (path: string) => `${HOST_SCHEME}${path.replace(/^\//, '')}`;
@@ -14,7 +25,7 @@ export const LINKS = {
   adminImpersonate: () => withScheme('admin/impersonate'),
 };
 
-export const getRouteForLink = (url: string): { route: string; params?: Record<string, string> } | null => {
+export const getRouteForLink = (url: string): RouteMatch | null => {
   const cleaned = url.replace(HOST_SCHEME, '').replace(/^\/+/, '');
 
   if (!cleaned) {

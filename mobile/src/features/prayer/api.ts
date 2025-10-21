@@ -3,10 +3,18 @@ import { supabase } from '../../lib/supabase';
 import type { PrayerDetail, PrayerReaction, PrayerSummary } from './types';
 
 type ReactionRow = Database['public']['Tables']['prayer_reactions']['Row'];
+type ReactionSelect = Pick<ReactionRow, 'emoji' | 'user_id'>;
 
-type PrayerRow = Database['public']['Tables']['prayers']['Row'] & {
-  prayer_reactions: ReactionRow[];
+type PrayerRow = Pick<
+  Database['public']['Tables']['prayers']['Row'],
+  'id' | 'body' | 'author_id' | 'is_anonymous' | 'hidden_at' | 'created_at'
+> & {
+  prayer_reactions: ReactionSelect[];
 };
+
+const PRAYER_COLUMNS =
+  'id, body, author_id, is_anonymous, hidden_at, created_at, prayer_reactions(emoji, user_id)';
+const PRAYER_REACTIONS_COLUMNS = 'emoji, user_id';
 
 const mapPrayerSummary = (row: PrayerRow): PrayerSummary => ({
   id: row.id,
@@ -29,7 +37,7 @@ const mapPrayerDetail = (row: PrayerRow): PrayerDetail => ({
 export const fetchPrayers = async (orgId: string): Promise<PrayerSummary[]> => {
   const { data, error } = await supabase
     .from('prayers')
-    .select('id, body, author_id, is_anonymous, hidden_at, created_at, prayer_reactions(emoji, user_id)')
+    .select(PRAYER_COLUMNS)
     .eq('org_id', orgId)
     .is('hidden_at', null)
     .order('created_at', { ascending: false })
@@ -39,13 +47,14 @@ export const fetchPrayers = async (orgId: string): Promise<PrayerSummary[]> => {
     throw new Error(error.message);
   }
 
-  return (data as PrayerRow[] | null)?.map(mapPrayerSummary) ?? [];
+  const rows = (data ?? []) as PrayerRow[];
+  return rows.map(mapPrayerSummary);
 };
 
 export const fetchPrayer = async (id: string): Promise<PrayerDetail> => {
   const { data, error } = await supabase
     .from('prayers')
-    .select('id, body, author_id, is_anonymous, hidden_at, created_at, prayer_reactions(emoji, user_id)')
+    .select(PRAYER_COLUMNS)
     .eq('id', id)
     .maybeSingle<PrayerRow>();
 
@@ -57,7 +66,7 @@ export const fetchPrayer = async (id: string): Promise<PrayerDetail> => {
     throw new Error('Prayer not found');
   }
 
-  return mapPrayerDetail(data);
+  return mapPrayerDetail(data as PrayerRow);
 };
 
 export const createPrayer = async (
@@ -123,14 +132,16 @@ export const togglePrayerReaction = async (
 
   const { data: reactions, error: reactionsError } = await supabase
     .from('prayer_reactions')
-    .select('emoji, user_id')
+    .select(PRAYER_REACTIONS_COLUMNS)
     .eq('prayer_id', prayerId);
 
   if (reactionsError) {
     throw new Error(reactionsError.message);
   }
 
-  return (reactions ?? []).map((reaction: ReactionRow) => ({
+  const reactionRows = (reactions ?? []) as ReactionSelect[];
+
+  return reactionRows.map((reaction) => ({
     emoji: reaction.emoji,
     userId: reaction.user_id,
   }));

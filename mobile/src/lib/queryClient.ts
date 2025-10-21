@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
-import type { PersistQueryClientOptions } from '@tanstack/react-query-persist-client';
+import type { PersistQueryClientProviderProps } from '@tanstack/react-query-persist-client';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +22,7 @@ export const asyncStoragePersister = createAsyncStoragePersister({
   storage: AsyncStorage,
 });
 
-export const persistOptions: PersistQueryClientOptions = {
+export const persistOptions: PersistQueryClientProviderProps['persistOptions'] = {
   persister: asyncStoragePersister,
   maxAge: 1000 * 60 * 60 * 24,
 };

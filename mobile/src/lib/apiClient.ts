@@ -14,6 +14,21 @@ const buildQueryString = (params: Record<string, unknown>) => {
   return query.toString();
 };
 
+type Serializable = string | Blob | ArrayBuffer | FormData | ReadableStream<Uint8Array<ArrayBufferLike>>;
+
+const isSerializableBody = (value: unknown): value is Serializable => {
+  if (
+    typeof value === 'string' ||
+    value instanceof Blob ||
+    value instanceof ArrayBuffer ||
+    value instanceof FormData
+  ) {
+    return true;
+  }
+
+  return typeof ReadableStream !== 'undefined' && value instanceof ReadableStream;
+};
+
 export const callEdgeFunction = async <TResponse, TPayload = Record<string, unknown>>(
   name: string,
   payload?: TPayload,
@@ -49,9 +64,16 @@ export const callEdgeFunction = async <TResponse, TPayload = Record<string, unkn
     return (await response.json()) as TResponse;
   }
 
+  const body = payload === undefined ? undefined : isSerializableBody(payload) ? payload : JSON.stringify(payload);
+  const headers =
+    body !== undefined && typeof body === 'string' && !isSerializableBody(payload)
+      ? { 'Content-Type': 'application/json' }
+      : undefined;
+
   const { data, error } = await supabase.functions.invoke<TResponse>(name, {
     method,
-    body: payload,
+    body,
+    headers,
   });
 
   if (error) {

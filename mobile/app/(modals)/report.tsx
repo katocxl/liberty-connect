@@ -2,7 +2,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { createReport } from '../../src/features/moderation/api';
+import { createReport, type ReportTargetType } from '../../src/features/moderation/api';
 import { Button } from '../../src/ui/Button';
 import { useAuthStore } from '../../src/store';
 
@@ -10,6 +10,11 @@ interface FormValues {
   reason: string;
   details: string;
 }
+
+const REPORT_TARGET_TYPES: ReportTargetType[] = ['prayer', 'announcement', 'devotional', 'event', 'user'];
+
+const isReportTargetType = (value: unknown): value is ReportTargetType =>
+  typeof value === 'string' && REPORT_TARGET_TYPES.includes(value as ReportTargetType);
 
 export default function ReportModal(): JSX.Element {
   const router = useRouter();
@@ -26,8 +31,16 @@ export default function ReportModal(): JSX.Element {
       return;
     }
 
+    const parsedTargetType = isReportTargetType(targetType) ? targetType : null;
+    const parsedTargetId = typeof targetId === 'string' && targetId.length > 0 ? targetId : null;
+
+    if (!parsedTargetType || !parsedTargetId) {
+      Alert.alert('Missing context', 'Unable to determine what you are reporting.');
+      return;
+    }
+
     try {
-      await createReport(orgId, userId, String(targetType), String(targetId), reason, details);
+      await createReport(orgId, userId, parsedTargetType, parsedTargetId, reason, details);
       Alert.alert('Report submitted', 'Thank you for helping keep the community safe.');
       router.back();
     } catch (error) {
